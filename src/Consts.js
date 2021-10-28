@@ -33,6 +33,7 @@ module.exports = {
                 CHANNEL_AFTERTOUCH:0xd,
                 PITCH_BEND:0xe,
                 cc:{
+                    // 이거 다 쓰느라 ㅈㄴ힘들었음
                     BANK_SELECT:0x00,
                     MODULATION:0x01,
                     BREATH:0x02,
