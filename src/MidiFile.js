@@ -75,6 +75,7 @@ module.exports = class MidiFile{
         
         // duration_tick에도 정확히 3초를 추가
         if(unsafe){
+            this.header.duration_ms += 3000;
             let tevents = this.tempo_events.get_events();
             tevents = tevents[Math.max(...Object.keys(tevents))];
             let last_tempo = tevents[tevents.length-1] ? tevents[tevents.length-1].tempo : 500000;
