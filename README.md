@@ -1,6 +1,11 @@
 # zxe-midi-player
 Read/play standard Midi files.
 
+## Install
+```sh
+npm install zxe-midi-player
+```
+
 ## Usage
 ```js
 const fs = require('fs');
