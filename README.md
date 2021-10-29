@@ -39,7 +39,7 @@ player.on('midievent',(event,message) => {
 player.play();
 player.pause();
 
-player.tempo; // similar as HTMLMediaElement.playbackRate
+player.tempo; // similar to HTMLMediaElement.playbackRate
 player.duration_tick; // same as file.header.duration_tick
 player.duration_ms; // same as file.header.duration_ms
 player.current_tick;
