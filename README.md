@@ -1,12 +1,6 @@
 # zxe-midi-player
 midi file parser & player
 
-## Install
-Using npm
-```sh
-npm install zxe-midi-player
-```
-
 ## Usage
 ```js
 const fs = require('fs');
