@@ -16,7 +16,8 @@ let buf = fs.readFileSync('...'); // your midi file. it can be an ArrayBuffer or
 
 let file = new MidiFile(buf); // MidiFile instance
 file.header.format; // 0,1 or 2
-file.header.ticks_per_beat; // SMTPE is not supported
+file.header.ticks_per_beat; // If division is frames per seconds, this is null
+file.header.tick_resolution; // microseconds per tick
 file.header.tracks_count; // n
 file.header.duration_tick; // duration in tick
 file.header.duration_ms; // duration in ms

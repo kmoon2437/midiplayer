@@ -90,6 +90,12 @@ module.exports = class MidiPlayer extends EventEmitter{
     }
     
     get current_tick(){
+        // 초당 n틱 단위인 경우
+        // 일단 구현은 해놓았지만 사실상 아예 안쓸듯
+        if(!this.d.ticks_per_beat){
+            return Math.round(this.playms / (this.d.header.tick_resolution / 1000));
+        }
+        
         let events = this.d.tempo_events.get_events();
         for(let i in events){ // i는 해당 이벤트가 발생해야 하는 틱
             for(let j in events[i]){
@@ -111,6 +117,15 @@ module.exports = class MidiPlayer extends EventEmitter{
     set current_tick(val){
         this.reset_notes();
         // 저 위에 그 get current_tick의 역연산
+        this.playtick = val;
+        
+        // 초당 n틱 단위인 경우
+        // 일단 구현은 해놓았지만 사실상 아예 안쓸듯
+        if(!this.d.ticks_per_beat){
+            this.playms = Math.round(val * (this.d.header.tick_resolution / 1000));
+            return;
+        }
+        
         let events = this.d.tempo_events.get_events();
         for(let i in events){ // i는 해당 이벤트가 발생해야 하는 틱
             for(let j in events[i]){
@@ -122,7 +137,6 @@ module.exports = class MidiPlayer extends EventEmitter{
                 }
             }
         }
-        this.playtick = val;
     }
     
     get current_ms(){ return this.playms; }

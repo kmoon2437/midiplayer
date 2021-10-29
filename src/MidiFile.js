@@ -10,15 +10,17 @@ module.exports = class MidiFile{
     // unsafe를 false로 설정하면 파일의 duration은 (meta이벤트를 포함한 마지막 이벤트 시간)이 됨
     constructor(data,unsafe = true){
         this.d = new MidiFileData(data);
-        if(this.d.header.getTimeDivision() != MidiFileData.Header.TICKS_PER_BEAT){
-            throw new TypeError('Only ticks per beat is supported');
-        }
         
         this.header = {
             format:this.d.header.getFormat(),
-            ticks_per_beat:this.d.header.getTicksPerBeat(),
+            ticks_per_beat:null,
+            tick_resolution:this.d.header.getTickResolution(),
             tracks_count:this.d.header.getTracksCount(),
         };
+        
+        if(this.d.header.getTimeDivision() == MidiFileData.Header.TICKS_PER_BEAT){
+            this.header.ticks_per_beat = this.d.header.getTicksPerBeat();
+        }
         
         this.tracks = [];
         let endtimes = [];
