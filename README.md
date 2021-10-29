@@ -1,5 +1,5 @@
 # zxe-midi-player
-Read/play standard Midi files.
+midi file parser & player
 
 ## Install
 ```sh
