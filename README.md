@@ -2,6 +2,7 @@
 midi file parser & player
 
 ## Install
+Using npm
 ```sh
 npm install zxe-midi-player
 ```
