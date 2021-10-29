@@ -54,9 +54,13 @@ module.exports = class MidiFile{
                 track.add_event(playtick,event);
                 if(event.type != Consts.events.types.META){
                     last_midi_event = playtick;
+                    last_midi_event_ms = event.playTime;
                 }
                 if(event.type == Consts.events.types.META && event.subtype == Consts.events.subtypes.meta.SET_TEMPO){
                     this.tempo_events.add_event(playtick,event);
+                    
+                    // 모든 midi 이벤트가 끝나고도 tempo 이벤트가 남아있는 경우
+                    // duration_ms와 duration_tick에 차이가 생기는 것을 방지
                     last_midi_event = playtick;
                     last_midi_event_ms = event.playTime;
                 }

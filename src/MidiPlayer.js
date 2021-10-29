@@ -7,10 +7,10 @@ const INTERVAL_MS = 1;
 module.exports = class MidiPlayer extends EventEmitter{
     constructor(data){
         super();
-        if(data) this.load_midi(data);
+        if(data) this.load(data);
     }
     
-    load_midi(data){
+    load(data){
         if(this.playing) this.pause();
         if(data instanceof MidiFile){
             this.d = data;
@@ -20,7 +20,7 @@ module.exports = class MidiPlayer extends EventEmitter{
         this.playms = 0;
         this.lastplayms = 0;
         this.playtick = 0;
-        this.tempo = 1;
+        this.tempo = 1; // 배속 설정
         this.reset_notes(true);
 
         // reset sysex가 없는 midi파일의 경우 gs reset을 기본으로 적용하도록 설정
@@ -136,6 +136,10 @@ module.exports = class MidiPlayer extends EventEmitter{
     
     get duration_ms(){ return this.d.header.duration_ms; }
     
+    get ended(){
+        return this.current_tick >= this.duration_tick && this.current_ms >= this.duration_ms;
+    }
+    
     play(){
         if(this.playing) return;
         this.lastplayms = Date.now();
@@ -172,6 +176,9 @@ module.exports = class MidiPlayer extends EventEmitter{
             this.playtick++;
         }
 
+        if(this.ended){
+            this.pause();
+        }
         this.in_loop = false;
     }
 }
