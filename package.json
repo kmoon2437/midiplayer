@@ -1,6 +1,6 @@
 {
   "name": "zxe-midi-player",
-  "version": "1.0.3-chuchu0",
+  "version": "1.0.4-chuchu0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
