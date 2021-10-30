@@ -92,7 +92,7 @@ module.exports = class MidiPlayer extends EventEmitter{
     get current_tick(){
         // 초당 n틱 단위인 경우
         // 일단 구현은 해놓았지만 사실상 아예 안쓸듯
-        if(!this.d.ticks_per_beat){
+        if(!this.d.header.ticks_per_beat){
             return Math.round(this.playms / (this.d.header.tick_resolution / 1000));
         }
         
@@ -121,7 +121,7 @@ module.exports = class MidiPlayer extends EventEmitter{
         
         // 초당 n틱 단위인 경우
         // 일단 구현은 해놓았지만 사실상 아예 안쓸듯
-        if(!this.d.ticks_per_beat){
+        if(!this.d.header.ticks_per_beat){
             this.playms = Math.round(val * (this.d.header.tick_resolution / 1000));
             return;
         }
