@@ -71,7 +71,7 @@ module.exports = class MidiFile{
             endtimes.push(unsafe ? last_midi_event : playtick);
             endtimes_ms.push(unsafe ? last_midi_event_ms : playms);
         }
-        
+
         this.header.duration_tick = Math.max(...endtimes);
         this.header.duration_ms = Math.round(Math.max(...endtimes_ms));
         

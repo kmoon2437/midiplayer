@@ -8,7 +8,7 @@ module.exports = class MidiTrack{
         if(!this.events[time]) this.events[time] = [];
         this.events[time].push(event);
     }
-    
+
     get_events(){
         return this.events;
     }

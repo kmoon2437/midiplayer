@@ -99,7 +99,7 @@ module.exports = class MidiPlayer extends EventEmitter{
         let events = this.d.tempo_events.get_events();
         for(let i in events){ // i는 해당 이벤트가 발생해야 하는 틱
             for(let j in events[i]){
-                if(events[i][j].playTime < this.playms){
+                if(events[i][j].playTime <= this.playms){
                     // 알 수 없는 이유로 인해
                     // i가 문자열이 되면서
                     // 잘 되던 게 갑자기 ㅈㄴ
@@ -115,6 +115,7 @@ module.exports = class MidiPlayer extends EventEmitter{
     }
 
     set current_tick(val){
+        if(val < 0) return;
         this.reset_notes();
         // 저 위에 그 get current_tick의 역연산
         this.playtick = val;
@@ -141,6 +142,7 @@ module.exports = class MidiPlayer extends EventEmitter{
     
     get current_ms(){ return this.playms; }
     set current_ms(val){
+        if(val < 0) return;
         this.reset_notes();
         this.playms = Math.round(val);
         this.playtick = this.current_tick;

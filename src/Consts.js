@@ -124,7 +124,7 @@ module.exports = {
                     MONO_ON:0x7e,
                     POLY_ON:0x7f,
                     rpn:{
-                        // 이름:[msb,lsb],이름:[msb,lsb], ...
+                        // 이름:[msb,lsb],이름:[msb,lsb], ......
                         PITCH_BEND_SENSITIVITY:[0x00,0x00],
                         CHANNEL_FINE_TUNING:[0x00,0x01],
                         CHANNEL_COARSE_TUNING:[0x00,0x02],

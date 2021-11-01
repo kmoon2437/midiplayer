@@ -6,7 +6,7 @@ midi file parser & player
 const fs = require('fs');
 const { MidiFile,MidiPlayer } = require('zxe-midi-player');
 
-let buf = fs.readFileSync('...'); // your midi file. it can be an ArrayBuffer or nodejs Buffer
+let buf = fs.readFileSync('...'); // your midi file. it can be an ArrayBuffer or Uint8Array or nodejs Buffer
 
 let file = new MidiFile(buf); // MidiFile instance
 file.header.format; // 0,1 or 2
