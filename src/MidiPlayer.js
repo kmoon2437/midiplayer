@@ -97,7 +97,7 @@ module.exports = class MidiPlayer extends EventEmitter{
         }
         
         let events = this.d.tempo_events.get_events();
-        for(let i in events){ // i는 해당 이벤트가 발생해야 하는 틱
+        for(let i of Object.keys(events).reverse()){ // i는 해당 이벤트가 발생해야 하는 틱
             for(let j in events[i]){
                 if(events[i][j].playTime <= this.playms){
                     // 알 수 없는 이유로 인해
@@ -128,7 +128,7 @@ module.exports = class MidiPlayer extends EventEmitter{
         }
         
         let events = this.d.tempo_events.get_events();
-        for(let i in events){ // i는 해당 이벤트가 발생해야 하는 틱
+        for(let i of Object.keys(events).reverse()){ // i는 해당 이벤트가 발생해야 하는 틱
             for(let j in events[i]){
                 if(i < this.current_tick){
                     // 혹시 모르니 여기도...
