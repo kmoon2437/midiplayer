@@ -35,6 +35,9 @@ module.exports = class MidiPlayer extends EventEmitter{
         if(event.type == Consts.events.types.SYSEX){
             // Sysex
             this.emit('midievent',event,[event.type,...event.data]);
+        }else if(event.type == Consts.events.types.ESCAPE){
+            // 별다른 정의가 없는 midi 메세지
+            this.emit('midievent',event,[event.data]);
         }else if(event.type == Consts.events.types.MIDI){
             // 일반적인 Midi 이벤트
             this.emit('midievent',event,[(event.subtype << 4) + event.channel,...event.params]);

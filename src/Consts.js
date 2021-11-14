@@ -4,7 +4,7 @@ module.exports = {
             META:0xff,
             MIDI:0x8,
             SYSEX:0xf0,
-            DIVSYSEX:0xf7
+            ESCAPE:0xf7
         },
         subtypes:{
             meta:{

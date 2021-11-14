@@ -49,9 +49,6 @@ module.exports = class MidiFile{
                     event.params = p;
                     delete event.param1;
                     delete event.param2;
-                }else if(event.type == Consts.events.types.SYSEX || event.type == Consts.events.types.DIVSYSEX){
-                    // 일관성
-                    event.type = Consts.events.types.SYSEX;
                 }
                 track.add_event(playtick,event);
                 if(event.type != Consts.events.types.META){
