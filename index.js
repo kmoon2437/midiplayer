@@ -1,6 +1,4 @@
 module.exports = {
-    Consts:require('./src/Consts'),
-    MidiFile:require('./src/MidiFile'),
-    MidiTrack:require('./src/MidiTrack'),
-    MidiPlayer:require('./src/MidiPlayer')
+    MidiPlayer:require('./src/MidiPlayer'),
+    ZKPlayer:require('./src/ZKPlayer')
 };

@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const { Consts,MidiFile } = require('zxe-midi-file');
+const { Consts,ZKFile } = require('zxe-midi-file');
 
 const INTERVAL_MS = 1;
 
@@ -11,10 +11,10 @@ module.exports = class MidiPlayer extends EventEmitter{
     
     load(data){
         if(this.playing) this.pause();
-        if(data instanceof MidiFile){
+        if(data instanceof ZKFile){
             this.d = data;
         }else{
-            this.d = new MidiFile(data);
+            this.d = new ZKFile(data);
         }
         this.playms = 0;
         this.lastplayms = 0;
@@ -22,27 +22,27 @@ module.exports = class MidiPlayer extends EventEmitter{
         this.tempo = 1; // 배속 설정
         this.reset_notes(true);
 
-        // reset sysex가 없는 midi파일의 경우 gs reset을 기본으로 적용하도록 설정
+        // reset sysex가 없는 zk파일의 경우 gs reset을 기본으로 적용하도록 설정
         this.trigger_midi_event({
             type:Consts.events.types.SYSEX,
             data:[0x41,0x10,0x42,0x12,0x40,0x00,0x7f,0x00,0x41,0xf7]
         });
     }
 
-    trigger_midi_event(event){
+    trigger_midi_event(event,portnum){
         // 두번째 인자로 들어가는 배열은 Synth에 보내는 midi message(없을 경우 null로 설정)
         if(event.type == Consts.events.types.SYSEX){
             // Sysex
-            this.emit('midievent',event,[event.type,...event.data]);
+            this.emit('midievent',event,portnum,[event.type,...event.data]);
         }else if(event.type == Consts.events.types.ESCAPE){
             // escape(안에 있는 걸 그대로 midi신호로 전송)
-            this.emit('midievent',event,event.data);
+            this.emit('midievent',event,portnum,event.data);
         }else if(event.type == Consts.events.types.MIDI){
             // 일반적인 Midi 이벤트
-            this.emit('midievent',event,[(event.subtype << 4) + event.channel,...event.params]);
+            this.emit('midievent',event,portnum,[(event.subtype << 4) + event.channel,...event.params]);
         }else if(event.type == Consts.events.types.META){
             // Synth에 보낼 필요가 없는 Meta 이벤트
-            this.emit('midievent',event,null);
+            this.emit('midievent',event,portnum,null);
         }
     }
 
@@ -110,7 +110,7 @@ module.exports = class MidiPlayer extends EventEmitter{
                     // ㅆ발 이거때메 ㅈㄴ놀랐음
                     i = parseInt(i,10);
                     j = parseInt(j,10);
-                    return Math.round(((this.playms - events[i][j].playTime) / (events[i][j].tempo / 1000) * this.d.header.ticks_per_beat) + i);
+                    return Math.round(((this.playms - events[i][j].playms) / (events[i][j].tempo / 1000) * this.d.header.ticks_per_beat) + i);
                 }
             }
         }
@@ -136,7 +136,7 @@ module.exports = class MidiPlayer extends EventEmitter{
                     // 혹시 모르니 여기도...
                     i = parseInt(i,10);
                     j = parseInt(j,10);
-                    this.playms = Math.round(((val - i) / this.d.header.ticks_per_beat * (events[i][j].tempo / 1000)) + events[i][j].playTime);
+                    this.playms = Math.round(((val - i) / this.d.header.ticks_per_beat * (events[i][j].tempo / 1000)) + events[i][j].playms);
                 }
             }
         }
@@ -185,11 +185,13 @@ module.exports = class MidiPlayer extends EventEmitter{
         let current_tick = this.current_tick;
         let t = current_tick - this.playtick;
         for(let i = 0;i < t;i++){
-            this.d.tracks.forEach(track => {
-                let events = track.get_events();
-                if(events[this.playtick]){
-                    events[this.playtick].forEach(this.trigger_midi_event.bind(this));
-                }
+            this.d.ports.forEach((port,i) => {
+                ports.forEach(track => {
+                    let events = track.get_events();
+                    if(events[this.playtick]){
+                        events[this.playtick].forEach(event => this.trigger_midi_event.bind(event,i));
+                    }
+                });
             });
             this.playtick++;
         }

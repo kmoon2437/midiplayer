@@ -1,31 +1,15 @@
 # zxe-midi-player
-midi file parser & player
+midi file player
 
 ## Usage
 ```js
 const fs = require('fs');
-const { MidiFile,MidiPlayer } = require('zxe-midi-player');
+const { MidiPlayer,ZKPlayer } = require('zxe-midi-player');
 
-let buf = fs.readFileSync('...'); // your midi file. it can be an ArrayBuffer or Uint8Array or nodejs Buffer
+let midi = fs.readFileSync('...'); // your midi file. it can be an ArrayBuffer or Uint8Array or nodejs Buffer
 
-let file = new MidiFile(buf); // MidiFile instance
-file.header.format; // 0,1 or 2
-file.header.ticks_per_beat; // If division is frames per seconds, this is null
-file.header.tick_resolution; // microseconds per tick
-file.header.tracks_count; // n
-file.header.duration_tick; // duration in tick
-file.header.duration_ms; // duration in ms
-
-file.tracks; // array
-file.tempo_events; // "set tempo" events
-
-let player; // variable for MidiPlayer instance
-
-// insert MidiFile instance
-player = new MidiPlayer(file);
-
-// or insert buffer directly
-player = new MidiPlayer(buf);
+// insert buffer
+let player = new MidiPlayer(midi);
 
 player.on('midievent',(event,message) => {
     event; // information of event
@@ -36,8 +20,8 @@ player.play();
 player.pause();
 
 player.tempo; // similar to HTMLMediaElement.playbackRate
-player.duration_tick; // same as file.header.duration_tick
-player.duration_ms; // same as file.header.duration_ms
+player.duration_tick; // same as MidiFile.header.duration_tick
+player.duration_ms; // same as MidiFile.header.duration_ms
 player.current_tick;
 player.current_ms;
 
@@ -45,7 +29,13 @@ let buf2 = fs.readFileSync('....'); // another midi file
 player.load(buf2); // loading another midi file
 
 player.play();
+
+let zk = fs.readFileSync('...'); // your zk file. it can be an ArrayBuffer or Uint8Array or nodejs Buffer
+
+// insert buffer
+// The usage is the same as MidiPlayer.
+let player2 = new ZKPlayer(zk);
 ```
 
-## Others
-This library is using [midifile](https://github.com/nfroidure/midifile) to parse midi files.
+## About ZK file
+[link](https://github.com/kmoon2437/zxe-midi-file)
