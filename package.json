@@ -1,6 +1,6 @@
 {
   "name": "zxe-midi-player",
-  "version": "1.0.10-chuchu0",
+  "version": "1.1.0-chuchu0",
   "description": "midi file parser & player",
   "main": "index.js",
   "scripts": {
