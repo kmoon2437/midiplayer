@@ -35,6 +35,12 @@ let zk = fs.readFileSync('...'); // your zk file. it can be an ArrayBuffer or Ui
 // insert buffer
 // The usage is the same as MidiPlayer.
 let player2 = new ZKPlayer(zk);
+
+player2.on('midievent',(event,portnum,message) => {
+    event; // information of event
+    portnum; // port number
+    message; // midi message. if it is null, this event is meta event
+});
 ```
 
 ## About ZK file

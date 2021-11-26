@@ -185,11 +185,16 @@ module.exports = class MidiPlayer extends EventEmitter{
         let current_tick = this.current_tick;
         let t = current_tick - this.playtick;
         for(let i = 0;i < t;i++){
-            this.d.ports.forEach((port,i) => {
-                ports.forEach(track => {
+            let gevents = this.d.global_events.get_events();
+            if(gevents[this.playtick]){
+                gevents[this.playtick].forEach(event => this.trigger_midi_event.bind(event,null));
+            }
+
+            this.d.ports.forEach((port,num) => {
+                port.forEach(track => {
                     let events = track.get_events();
                     if(events[this.playtick]){
-                        events[this.playtick].forEach(event => this.trigger_midi_event.bind(event,i));
+                        events[this.playtick].forEach(event => this.trigger_midi_event.bind(event,num));
                     }
                 });
             });
