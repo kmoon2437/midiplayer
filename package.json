@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "zxe-midi-file": "^0.0.0-pareo0"
+    "zxe-midi-file": "^0.0.3-pareo0"
   },
   "repository": {
     "type": "git",
