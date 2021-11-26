@@ -3,7 +3,7 @@ const { Consts,ZKFile } = require('zxe-midi-file');
 
 const INTERVAL_MS = 1;
 
-module.exports = class MidiPlayer extends EventEmitter{
+module.exports = class ZKPlayer extends EventEmitter{
     constructor(data){
         super();
         if(data) this.load(data);
