@@ -128,4 +128,7 @@ dist
 # Serverless Webpack directories
 .webpack/
 
+# 테스트 폴더
+test/
+
 # End of https://www.toptal.com/developers/gitignore/api/node

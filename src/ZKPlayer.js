@@ -101,7 +101,7 @@ module.exports = class ZKPlayer extends EventEmitter{
         let events = this.d.tempo_events.get_events();
         for(let i of Object.keys(events).reverse()){ // i는 해당 이벤트가 발생해야 하는 틱
             for(let j in events[i]){
-                if(events[i][j].playTime <= this.playms){
+                if(events[i][j].playms <= this.playms){
                     // 알 수 없는 이유로 인해
                     // i가 문자열이 되면서
                     // 잘 되던 게 갑자기 ㅈㄴ
@@ -187,14 +187,14 @@ module.exports = class ZKPlayer extends EventEmitter{
         for(let i = 0;i < t;i++){
             let gevents = this.d.global_events.get_events();
             if(gevents[this.playtick]){
-                gevents[this.playtick].forEach(event => this.trigger_midi_event.bind(event,null));
+                gevents[this.playtick].forEach(event => this.trigger_midi_event(event,null));
             }
 
             this.d.ports.forEach((port,num) => {
                 port.forEach(track => {
                     let events = track.get_events();
                     if(events[this.playtick]){
-                        events[this.playtick].forEach(event => this.trigger_midi_event.bind(event,num));
+                        events[this.playtick].forEach(event => this.trigger_midi_event(event,num));
                     }
                 });
             });
