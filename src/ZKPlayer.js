@@ -4,8 +4,9 @@ const { Consts,ZKFile } = require('zxe-midi-file');
 const INTERVAL_MS = 1;
 
 module.exports = class ZKPlayer extends EventEmitter{
-    constructor(data){
+    constructor(data,port_count){
         super();
+        this.port_count = port_count;
         if(data) this.load(data);
     }
     
@@ -47,46 +48,48 @@ module.exports = class ZKPlayer extends EventEmitter{
     }
 
     reset_notes(reset_everything = false){
-        for(var i = 0;i < 16;i++){
-            // 모든 노트 끄기
-            this.trigger_midi_event({
-                type:Consts.events.types.MIDI,
-                subtype:Consts.events.subtypes.midi.CONTROL_CHANGE,
-                channel:i,
-                params:[Consts.events.subtypes.midi.cc.ALL_SOUND_OFF,0]
-            });
-
-            // 피치벤드 초기화
-            this.trigger_midi_event({
-                type:Consts.events.types.MIDI,
-                subtype:Consts.events.subtypes.midi.PITCH_BEND,
-                channel:i,
-                params:[0,64]
-            });
-
-            // sustain(피아노의 오른쪽 페달과 같은 기능) 끄기
-            this.trigger_midi_event({
-                type:Consts.events.types.MIDI,
-                subtype:Consts.events.subtypes.midi.CONTROL_CHANGE,
-                channel:i,
-                params:[Consts.events.subtypes.midi.cc.SUSTAIN_ONOFF,0]
-            });
-            if(reset_everything){
-                // 모든 controller 초기화
+        for(let j = 0;j < this.port_count;j++){
+            for(var i = 0;i < 16;i++){
+                // 모든 노트 끄기
                 this.trigger_midi_event({
                     type:Consts.events.types.MIDI,
                     subtype:Consts.events.subtypes.midi.CONTROL_CHANGE,
                     channel:i,
-                    params:[Consts.events.subtypes.midi.cc.RESET_ALL_CONTROLLERS,0]
-                });
-
-                // 모든 patch를 0번(acoustic grand piano)로 초기화
+                    params:[Consts.events.subtypes.midi.cc.ALL_SOUND_OFF,0]
+                },j);
+    
+                // 피치벤드 초기화
                 this.trigger_midi_event({
                     type:Consts.events.types.MIDI,
-                    subtype:Consts.events.subtypes.midi.PROGRAM_CHANGE,
+                    subtype:Consts.events.subtypes.midi.PITCH_BEND,
                     channel:i,
-                    params:[0,0]
-                });
+                    params:[0,64]
+                },j);
+    
+                // sustain(피아노의 오른쪽 페달과 같은 기능) 끄기
+                this.trigger_midi_event({
+                    type:Consts.events.types.MIDI,
+                    subtype:Consts.events.subtypes.midi.CONTROL_CHANGE,
+                    channel:i,
+                    params:[Consts.events.subtypes.midi.cc.SUSTAIN_ONOFF,0]
+                },j);
+                if(reset_everything){
+                    // 모든 controller 초기화
+                    this.trigger_midi_event({
+                        type:Consts.events.types.MIDI,
+                        subtype:Consts.events.subtypes.midi.CONTROL_CHANGE,
+                        channel:i,
+                        params:[Consts.events.subtypes.midi.cc.RESET_ALL_CONTROLLERS,0]
+                    },j);
+    
+                    // 모든 patch를 0번(acoustic grand piano)로 초기화
+                    this.trigger_midi_event({
+                        type:Consts.events.types.MIDI,
+                        subtype:Consts.events.subtypes.midi.PROGRAM_CHANGE,
+                        channel:i,
+                        params:[0,0]
+                    },j);
+                }
             }
         }
     }
