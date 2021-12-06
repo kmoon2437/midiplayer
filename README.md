@@ -30,7 +30,7 @@ player.load(buf2); // loading another midi file
 
 player.play();
 
-let zk = fs.readFileSync('...'); // your zk file. it can be a string or nodejs Buffer
+let zk = fs.readFileSync('...'); // your zk file. it can be an ArrayBuffer or Uint8Array or nodejs Buffer
 
 // The usage is similar to MidiPlayer.
 let player2 = new ZKPlayer(zk,2); // 2 = port count
