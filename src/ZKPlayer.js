@@ -24,10 +24,12 @@ module.exports = class ZKPlayer extends EventEmitter{
         this.reset_notes(true);
 
         // reset sysex가 없는 zk파일의 경우 gs reset을 기본으로 적용하도록 설정
-        this.trigger_midi_event({
-            type:Consts.events.types.SYSEX,
-            data:[0x41,0x10,0x42,0x12,0x40,0x00,0x7f,0x00,0x41,0xf7]
-        });
+        for(let i = 0;i < this.port_count;i++){
+            this.trigger_midi_event({
+                type:Consts.events.types.SYSEX,
+                data:[0x41,0x10,0x42,0x12,0x40,0x00,0x7f,0x00,0x41,0xf7]
+            },i);
+        }
     }
 
     trigger_midi_event(event,portnum){
