@@ -188,7 +188,7 @@ module.exports = class MidiPlayer extends EventEmitter{
             this.d.tracks.forEach(track => {
                 let events = track.getEvents();
                 if(events[this.playtick]){
-                    events[this.playtick].forEach(this.triggermidiEvent.bind(this));
+                    events[this.playtick].forEach(event => this.triggerMidiEvent(event));
                 }
             });
             this.playtick++;
