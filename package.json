@@ -1,6 +1,6 @@
 {
   "name": "zxe-midi-player",
-  "version": "2.0.0-pareo1",
+  "version": "2.0.1-pareo1",
   "description": "midi file parser & player",
   "main": "index.js",
   "scripts": {
