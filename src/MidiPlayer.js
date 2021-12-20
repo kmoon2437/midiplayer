@@ -20,36 +20,36 @@ module.exports = class MidiPlayer extends EventEmitter{
         this.lastplayms = 0;
         this.playtick = 0;
         this.tempo = 1; // 배속 설정
-        this.reset_notes(true);
+        this.resetNotes(true);
 
         // reset sysex가 없는 midi파일의 경우 gs reset을 기본으로 적용하도록 설정
-        this.trigger_midi_event({
+        this.triggerMidiEvent({
             type:Consts.events.types.SYSEX,
             data:[0x41,0x10,0x42,0x12,0x40,0x00,0x7f,0x00,0x41,0xf7]
         });
     }
 
-    trigger_midi_event(event){
+    triggerMidiEvent(event,portnum = 0){
         // 두번째 인자로 들어가는 배열은 Synth에 보내는 midi message(없을 경우 null로 설정)
         if(event.type == Consts.events.types.SYSEX){
             // Sysex
-            this.emit('midievent',event,[event.type,...event.data]);
+            this.emit('midievent',event,portnum,[event.type,...event.data]);
         }else if(event.type == Consts.events.types.ESCAPE){
             // escape(안에 있는 걸 그대로 midi신호로 전송)
-            this.emit('midievent',event,event.data);
+            this.emit('midievent',event,portnum,event.data);
         }else if(event.type == Consts.events.types.MIDI){
             // 일반적인 Midi 이벤트
-            this.emit('midievent',event,[(event.subtype << 4) + event.channel,...event.params]);
+            this.emit('midievent',event,portnum,[(event.subtype << 4) + event.channel,...event.params]);
         }else if(event.type == Consts.events.types.META){
             // Synth에 보낼 필요가 없는 Meta 이벤트
-            this.emit('midievent',event,null);
+            this.emit('midievent',event,portnum,null);
         }
     }
 
-    reset_notes(reset_everything = false){
+    resetNotes(resetEverything = false){
         for(var i = 0;i < 16;i++){
             // 모든 노트 끄기
-            this.trigger_midi_event({
+            this.triggerMidiEvent({
                 type:Consts.events.types.MIDI,
                 subtype:Consts.events.subtypes.midi.CONTROL_CHANGE,
                 channel:i,
@@ -57,7 +57,7 @@ module.exports = class MidiPlayer extends EventEmitter{
             });
 
             // 피치벤드 초기화
-            this.trigger_midi_event({
+            this.triggerMidiEvent({
                 type:Consts.events.types.MIDI,
                 subtype:Consts.events.subtypes.midi.PITCH_BEND,
                 channel:i,
@@ -65,15 +65,15 @@ module.exports = class MidiPlayer extends EventEmitter{
             });
 
             // sustain(피아노의 오른쪽 페달과 같은 기능) 끄기
-            this.trigger_midi_event({
+            this.triggerMidiEvent({
                 type:Consts.events.types.MIDI,
                 subtype:Consts.events.subtypes.midi.CONTROL_CHANGE,
                 channel:i,
                 params:[Consts.events.subtypes.midi.cc.SUSTAIN_ONOFF,0]
             });
-            if(reset_everything){
+            if(resetEverything){
                 // 모든 controller 초기화
-                this.trigger_midi_event({
+                this.triggerMidiEvent({
                     type:Consts.events.types.MIDI,
                     subtype:Consts.events.subtypes.midi.CONTROL_CHANGE,
                     channel:i,
@@ -81,7 +81,7 @@ module.exports = class MidiPlayer extends EventEmitter{
                 });
 
                 // 모든 patch를 0번(acoustic grand piano)로 초기화
-                this.trigger_midi_event({
+                this.triggerMidiEvent({
                     type:Consts.events.types.MIDI,
                     subtype:Consts.events.subtypes.midi.PROGRAM_CHANGE,
                     channel:i,
@@ -91,14 +91,14 @@ module.exports = class MidiPlayer extends EventEmitter{
         }
     }
     
-    get current_tick(){
+    get currentTick(){
         // 초당 n틱 단위인 경우
         // 일단 구현은 해놓았지만 사실상 아예 안쓸듯
-        if(!this.d.header.ticks_per_beat){
-            return Math.round(this.playms / (this.d.header.tick_resolution / 1000));
+        if(!this.d.header.ticksPerBeat){
+            return Math.round(this.playms / (this.d.header.tickResolution / 1000));
         }
         
-        let events = this.d.tempo_events.get_events();
+        let events = this.d.tempoEvents.getEvents();
         for(let i of Object.keys(events).reverse()){ // i는 해당 이벤트가 발생해야 하는 틱
             for(let j in events[i]){
                 if(events[i][j].playTime <= this.playms){
@@ -110,85 +110,85 @@ module.exports = class MidiPlayer extends EventEmitter{
                     // ㅆ발 이거때메 ㅈㄴ놀랐음
                     i = parseInt(i,10);
                     j = parseInt(j,10);
-                    return Math.round(((this.playms - events[i][j].playTime) / (events[i][j].tempo / 1000) * this.d.header.ticks_per_beat) + i);
+                    return Math.round(((this.playms - events[i][j].playTime) / (events[i][j].tempo / 1000) * this.d.header.ticksPerBeat) + i);
                 }
             }
         }
     }
 
-    set current_tick(val){
+    set currentTick(val){
         if(val < 0) return;
-        this.reset_notes();
-        // 저 위에 그 get current_tick의 역연산
+        this.resetNotes();
+        // 저 위에 그 get currentTick의 역연산
         this.playtick = val;
         
         // 초당 n틱 단위인 경우
         // 일단 구현은 해놓았지만 사실상 아예 안쓸듯
-        if(!this.d.header.ticks_per_beat){
-            this.playms = Math.round(val * (this.d.header.tick_resolution / 1000));
+        if(!this.d.header.ticksPerBeat){
+            this.playms = Math.round(val * (this.d.header.tickResolution / 1000));
             return;
         }
         
-        let events = this.d.tempo_events.get_events();
+        let events = this.d.tempoEvents.getEvents();
         for(let i of Object.keys(events).reverse()){ // i는 해당 이벤트가 발생해야 하는 틱
             for(let j in events[i]){
-                if(i < this.current_tick){
+                if(i < this.currentTick){
                     // 혹시 모르니 여기도...
                     i = parseInt(i,10);
                     j = parseInt(j,10);
-                    this.playms = Math.round(((val - i) / this.d.header.ticks_per_beat * (events[i][j].tempo / 1000)) + events[i][j].playTime);
+                    this.playms = Math.round(((val - i) / this.d.header.ticksPerBeat * (events[i][j].tempo / 1000)) + events[i][j].playTime);
                 }
             }
         }
     }
     
-    get current_ms(){ return this.playms; }
-    set current_ms(val){
+    get currentMs(){ return this.playms; }
+    set currentMs(val){
         if(val < 0) return;
-        this.reset_notes();
+        this.resetNotes();
         this.playms = Math.round(val);
-        this.playtick = this.current_tick;
+        this.playtick = this.currentTick;
     }
     
-    get duration_tick(){ return this.d.header.duration_tick; }
+    get durationTick(){ return this.d.header.durationTick; }
     
-    get duration_ms(){ return this.d.header.duration_ms; }
+    get durationMs(){ return this.d.header.durationMs; }
     
     get ended(){
-        return this.current_tick >= this.duration_tick && this.current_ms >= this.duration_ms;
+        return this.currentTick >= this.durationTick && this.currentMs >= this.durationMs;
     }
     
     play(){
         if(this.playing) return;
         this.lastplayms = Date.now();
         this.playing = true;
-        this.interval = setInterval(this.play_loop.bind(this),INTERVAL_MS);
+        this.interval = setInterval(this.playLoop.bind(this),INTERVAL_MS);
     }
     
     pause(){
         if(!this.playing) return;
-        this.reset_notes();
+        this.resetNotes();
         this.playing = false;
         clearInterval(this.interval);
     }
     
-    play_loop(){
-        if(this.in_loop) return;
-        this.in_loop = true;
+    playLoop(){
+        if(this.inLoop) return;
+        this.inLoop = true;
         // 밀리초 계산
         let now = Date.now();
-        let elapsed_ms = (now - this.lastplayms)*this.tempo;
+        let elapsedMs = (now - this.lastplayms)*this.tempo;
         this.lastplayms = now;
-        this.playms += elapsed_ms;
+        this.playms += elapsedMs;
         
         // 실제 이벤트 수행
-        let current_tick = this.current_tick;
-        let t = current_tick - this.playtick;
+        let currentTick = this.currentTick;
+        let t = currentTick - this.playtick;
         for(let i = 0;i < t;i++){
             this.d.tracks.forEach(track => {
-                let events = track.get_events();
+                let events = track.getEvents();
                 if(events[this.playtick]){
-                    events[this.playtick].forEach(this.trigger_midi_event.bind(this));
+                    events[this.playtick].forEach(this.triggermidiEvent.bind(this));
                 }
             });
             this.playtick++;
@@ -197,6 +197,6 @@ module.exports = class MidiPlayer extends EventEmitter{
         if(this.ended){
             this.pause();
         }
-        this.in_loop = false;
+        this.inLoop = false;
     }
 }
