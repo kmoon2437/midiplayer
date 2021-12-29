@@ -1,4 +1,4 @@
 module.exports = {
     MidiPlayer:require('./src/MidiPlayer'),
-    ZKPlayer:require('./src/ZKPlayer')
+    YJKPlayer:require('./src/YJKPlayer')
 };

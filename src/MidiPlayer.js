@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const { Consts,MidiFile } = require('zxe-midi-file');
+const { Consts,MidiFile } = require('@kmoon2437/midifile');
 
 const INTERVAL_MS = 1;
 

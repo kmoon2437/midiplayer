@@ -1,9 +1,9 @@
 const EventEmitter = require('events');
-const { Consts,ZKFile } = require('zxe-midi-file');
+const { Consts,YJKFile } = require('@kmoon2437/midifile');
 
 const INTERVAL_MS = 1;
 
-module.exports = class ZKPlayer extends EventEmitter{
+module.exports = class YJKPlayer extends EventEmitter{
     constructor(data,portCount){
         super();
         this.portCount = portCount;
@@ -12,10 +12,10 @@ module.exports = class ZKPlayer extends EventEmitter{
     
     load(data){
         if(this.playing) this.pause();
-        if(data instanceof ZKFile){
+        if(data instanceof YJKFile){
             this.d = data;
         }else{
-            this.d = new ZKFile(data);
+            this.d = new YJKFile(data);
         }
         this.playms = 0;
         this.lastplayms = 0;
@@ -23,7 +23,7 @@ module.exports = class ZKPlayer extends EventEmitter{
         this.tempo = 1; // 배속 설정
         this.resetNotes(true);
 
-        // reset sysex가 없는 zk파일의 경우 gs reset을 기본으로 적용하도록 설정
+        // reset sysex가 없는 yjk파일의 경우 gs reset을 기본으로 적용하도록 설정
         for(let i = 0;i < this.portCount;i++){
             this.triggerMidiEvent({
                 type:Consts.events.types.SYSEX,

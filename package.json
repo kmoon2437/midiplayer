@@ -1,7 +1,7 @@
 {
-  "name": "zxe-midi-player",
+  "name": "@kmoon2437/midiplayer",
   "version": "2.0.2-pareo1",
-  "description": "midi file parser & player",
+  "description": "midi/yjk file player",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,16 +9,16 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "zxe-midi-file": "^1.0.0-chuchu1"
+    "@kmoon2437/midifile": "^2.0.1-chuchu0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kmoon2437/zxe-midi-player.git"
+    "url": "git+https://github.com/kmoon2437/midiplayer.git"
   },
   "bugs": {
-    "url": "https://github.com/kmoon2437/zxe-midi-player/issues"
+    "url": "https://github.com/kmoon2437/midiplayer/issues"
   },
-  "homepage": "https://github.com/kmoon2437/zxe-midi-player#readme",
+  "homepage": "https://github.com/kmoon2437/midiplayer#readme",
   "keywords": [
     "midi",
     "parser",

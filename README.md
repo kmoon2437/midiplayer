@@ -1,10 +1,10 @@
-# zxe-midi-player
-midi file player
+# @kmoon2437/midiplayer
+midi/yjk file player
 
 ## Usage
 ```js
 const fs = require('fs');
-const { MidiPlayer,ZKPlayer } = require('zxe-midi-player');
+const { MidiPlayer,YJKPlayer } = require('@kmoon2437/midiplayer');
 
 let midi = fs.readFileSync('...'); // your midi file. it can be an ArrayBuffer or Uint8Array or nodejs Buffer
 
@@ -31,10 +31,10 @@ player.load(buf2); // loading another midi file
 
 player.play();
 
-let zk = fs.readFileSync('...'); // your zk file. it can be an ArrayBuffer or Uint8Array or nodejs Buffer
+let yjk = fs.readFileSync('...'); // your yjk file. it can be an ArrayBuffer or Uint8Array or nodejs Buffer
 
 // The usage is similar to MidiPlayer.
-let player2 = new ZKPlayer(zk,2); // 2 = port count
+let player2 = new YJKPlayer(yjk,2); // 2 = port count
 
 player2.portCount; // port count
 player2.on('midievent',(event,portnum,message) => {
@@ -45,5 +45,5 @@ player2.on('midievent',(event,portnum,message) => {
 player2.play();
 ```
 
-## About zk file
-[link](https://github.com/kmoon2437/zxe-midi-file)
+## About yjk file
+[link](https://github.com/kmoon2437/midifile)
