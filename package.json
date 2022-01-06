@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@kmoon2437/midifile": "^2.0.1-chuchu0"
+    "@kmoon2437/midifile": "^2.2.0-chuchu0"
   },
   "repository": {
     "type": "git",
