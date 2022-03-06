@@ -96,17 +96,17 @@ module.exports = class YJKPlayer extends EventEmitter{
         }
     }
     
-    get currentTick(){
+    calcCurrentTickFromCurrentMs(currentMs){
         // 초당 n틱 단위인 경우
         // 일단 구현은 해놓았지만 사실상 아예 안쓸듯
         if(!this.d.header.ticksPerBeat){
-            return Math.round(this.playms / (this.d.header.tickResolution / 1000));
+            return Math.round(currentMs / (this.d.header.tickResolution / 1000));
         }
         
         let events = this.d.tempoEvents.getEvents();
         for(let i of Object.keys(events).reverse()){ // i는 해당 이벤트가 발생해야 하는 틱
             for(let j in events[i]){
-                if(events[i][j].playms <= this.playms){
+                if(events[i][j].playms <= currentMs){
                     // 알 수 없는 이유로 인해
                     // i가 문자열이 되면서
                     // 잘 되던 게 갑자기 ㅈㄴ
@@ -115,10 +115,14 @@ module.exports = class YJKPlayer extends EventEmitter{
                     // ㅆ발 이거때메 ㅈㄴ놀랐음
                     i = parseInt(i,10);
                     j = parseInt(j,10);
-                    return Math.round(((this.playms - events[i][j].playms) / (events[i][j].tempo / 1000) * this.d.header.ticksPerBeat) + i);
+                    return Math.round(((currentMs - events[i][j].playms) / (events[i][j].tempo / 1000) * this.d.header.ticksPerBeat) + i);
                 }
             }
         }
+    }
+
+    get currentTick(){
+        return this.calcCurrentTickFromCurrentMs(this.playms);
     }
 
     set currentTick(val){
