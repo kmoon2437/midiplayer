@@ -1,6 +1,6 @@
 {
   "name": "@kmoon2437/midiplayer",
-  "version": "3.2.0-pareo1",
+  "version": "3.2.1-pareo1",
   "description": "midi/yjk file player",
   "main": "index.js",
   "scripts": {
